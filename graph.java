@@ -22,6 +22,46 @@ public class graph {
         
     }
 
+    Boolean isCyclicUtil(int v, Boolean visited[],int parent){
+        visited[v] = true;
+        Integer i;
+        Iterator<Integer> it = adj[v].iterator();
+        while (it.hasNext()) {
+            i = it.next();
+ 
+            // If an adjacent is not
+            // visited, then recur for that
+            // adjacent
+            if (!visited[i]) {
+                if (isCyclicUtil(i, visited, v))
+                    return true;
+            }
+ 
+            // If an adjacent is visited
+            // and not parent of current
+            // vertex, then there is a cycle.
+            else if (i != parent)
+                return true;
+        }
+        return false;
+    }
+
+    Boolean isCyclic(){
+        Boolean visited[] = new Boolean[V];
+        for (int i = 0; i < V; i++){
+            visited[i] = false;
+        }
+        for (int u = 0; u < V; u++) {
+            if (!visited[u])
+                if (isCyclicUtil(u, visited, -1))
+                    return true;
+        }
+        return false;
+    }
+
+
+    
+
     
 
     
@@ -40,6 +80,53 @@ public class graph {
     public int V() {//returns the amount of vertices
         return V;
     }
+
+    public int minDistance(int[] dist, boolean[] visited) { //returns the vertex with the minimum distance
+        int min = Integer.MAX_VALUE;
+        int min_index = -1;
+        for (int v = 0; v < V; v++) {
+            if (visited[v] == false && dist[v] <= min) {
+                min = dist[v];
+                min_index = v;
+            }
+        }
+        return min_index;
+    }
+
+
+    public int[] shortestCycleWithSourceAndDestination (int s, int d) { //returns the shortest cycle that starts at s and includes d
+        int[] dist = new int[V];
+        int[] parent = new int[V];
+        boolean[] visited = new boolean[V];
+        for (int i = 0; i < V; i++) {
+            dist[i] = Integer.MAX_VALUE;
+            visited[i] = false;
+        }
+        dist[s] = 0;
+        for (int count = 0; count < V - 1; count++) {
+            int u = minDistance(dist, visited);
+            visited[u] = true;
+            for (int v = 0; v < V; v++) {
+                if (!visited[v] && adj[u].contains(v) && dist[u] != Integer.MAX_VALUE && dist[u] + 1 < dist[v]) {
+                    dist[v] = dist[u] + 1;
+                    parent[v] = u;
+                }
+            }
+        }
+        int[] path = new int[dist[d]+1];
+        int i = 0;
+        int j = d;
+        while (j != s) {
+            path[i] = j;
+            j = parent[j];
+            i++;
+        }
+        path[i] = s;
+        return path;
+    }
+    
+
+    
 
     
 
@@ -80,9 +167,25 @@ public class graph {
             return first == null;
         }
 
+        
+
+        public boolean contains(Item v) { //contains method
+            for (Item item : this) {
+                if (item == v) {
+                    return true;
+                }
+            }
+            return false;
+        }
+            
+
+
+
         public int size() {
             return N;
         }
+
+        
 
         public void add(Item item) {//add method
             Node oldfirst = first;

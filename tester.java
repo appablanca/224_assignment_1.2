@@ -1,7 +1,7 @@
 import java.util.*;
 public class tester {
     public static void main(String[] args) {
-
+        
         Scanner sc = new Scanner(System.in);
         int N,M;
         N = sc.nextInt();
@@ -17,7 +17,19 @@ public class tester {
         
         int start = sc.nextInt();   //taking the start and end points
         int end = sc.nextInt();
-        
+
+        if(g.isCyclic()){
+            
+            
+            int[] path = g.shortestCycleWithSourceAndDestination(start,end); // Calling the shortestCycleWithSourceAndDestination method
+            //Arrays.sort(path); // Sorting the result
+            for (int j : path) {
+                System.out.print(j  +" ");
+            }
+            
+        } else {
+            System.out.println("NO");
+        }
             
         
 
